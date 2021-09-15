@@ -1,0 +1,26 @@
+{
+    "name": "ssd",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/venuri1998/SSD.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/venuri1998/SSD/issues"
+    },
+    "homepage": "https://github.com/venuri1998/SSD#readme",
+    "devDependencies": {
+        "nodemon": "^2.0.12"
+    },
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}
