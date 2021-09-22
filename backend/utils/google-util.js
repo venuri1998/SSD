@@ -12,6 +12,7 @@ const googleConfig = {
 // scopes use for the application
 const defaultScope = [
     'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/contacts.readonly',
     'profile',
     'email'
 ]

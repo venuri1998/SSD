@@ -2,6 +2,7 @@ const express = require('express');
 const { google } = require('googleapis');
 const googleUtil = require('../utils/google-util');
 const googleCalenderService = require('../services/google-calendar.service');
+const googleContactService = require('../services/google-contact.service')
 
 const router = express.Router();
 
@@ -57,6 +58,8 @@ router.get('/home', (req, res) => {
             console.log('EVENT CREATE');
             res.json(response);
         });
+
+        googleContactService.listEvents(oauth2Client)
 
     } else {
         res.redirect('/login')
