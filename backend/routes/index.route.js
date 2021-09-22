@@ -6,19 +6,17 @@ const googleContactService = require('../services/google-contact.service')
 
 const router = express.Router();
 
-// default landing route
-router.get('/', (req, res) => {
-    res.json('landing page')
-});
-
 // redirect to authentication uri
 router.get('/login', (req, res) => {
+    console.log('LOGIN ROUTE');
     res.redirect(googleUtil.urlGoogle());
 });
 
 // middleware to check and save session cookie
 const setCookie = async(req, res, next) => {
+    console.log('SET COOKIE FUNC');
     googleUtil.getGoogleAccountFromCode(req.query.code, (err, res) => {
+        console.log('SET COOKIE FUNC - GET GG ACC');
         if (err) {
             res.redirect('/login');
         } else {
@@ -30,6 +28,7 @@ const setCookie = async(req, res, next) => {
 
 // redirect uri
 router.get('/auth/success', setCookie, (req, res) => {
+    console.log('AUTH SUCCESS ROUTE');
     res.redirect('/redirect');
 })
 
@@ -39,12 +38,13 @@ router.get('/auth/success', setCookie, (req, res) => {
  * this will render a simple view to save cookie in the front end (browser)
  */
 router.get('/redirect', (req, res) => {
+    console.log('REDIRECT ROUTE');
     res.render('redirect.html');
 });
 
 // dashboard
 router.get('/home', (req, res) => {
-
+    console.log('HOME ROUTE');
     // check for valid session
     if (req.session.user) {
 
@@ -54,19 +54,9 @@ router.get('/home', (req, res) => {
             access_token: req.session.user.accessToken
         });
 
-        // get calendar events by passing oauth2 client
-        googleCalenderService.listEvents(oauth2Client, (events) => {
-            console.log(events);
-
-            const data = {
-                name: req.session.user.name,
-                displayPicture: req.session.user.displayPicture,
-                id: req.session.user.id,
-                email: req.session.user.email,
-                events: events
-            }
-            // res.json(data);
-            res.render('dashboard.html', data);
+        googleCalenderService.createEvent(oauth2Client, (response) => {
+            console.log('EVENT CREATE');
+            res.json(response);
         });
 
         googleContactService.listEvents(oauth2Client, (events) => {
@@ -85,16 +75,5 @@ router.get('/home', (req, res) => {
         res.redirect('/login')
     }
 });
-
-// delete session and logout
-router.get('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            res.redirect('/home');
-        }
-        res.clearCookie('sid');
-        res.redirect('/');
-    });
-})
 
 module.exports = router;
