@@ -65,10 +65,21 @@ router.get('/home', (req, res) => {
                 email: req.session.user.email,
                 events: events
             }
-            res.json(data);
+            // res.json(data);
+            res.render('dashboard.html', data);
         });
 
-        googleContactService.listEvents(oauth2Client)
+        googleContactService.listEvents(oauth2Client, (events) => {
+            console.log(events)
+            const data = {
+                name: req.session.user.name,
+                displayPicture: req.session.user.displayPicture,
+                id: req.session.user.id,
+                email: req.session.user.email,
+                events: events
+            }
+            res.json(data);
+        })
 
     } else {
         res.redirect('/login')
