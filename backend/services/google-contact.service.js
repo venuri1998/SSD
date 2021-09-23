@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 
-module.exports.listEvents = function(auth) {
+module.exports.listEvents = function(auth, cb) {
     const service = google.people({version: 'v1', auth});
     service.people.connections.list({
         resourceName: 'people/me',
@@ -9,16 +9,17 @@ module.exports.listEvents = function(auth) {
     }, (err, res) => {
         if (err) return console.error('The API returned an error: ' + err);
         const connections = res.data.connections;
-        if (connections) {
-            console.log('Connections:');
-            connections.forEach((person) => {
-                if (person.names && person.names.length > 0) {
-                    console.log(person.names[0].displayName);
-                    console.log(person.emailAddresses)
-                } else {
-                    console.log('No display name found for connection.');
-                }
-            });
+        if (connections.length) {
+            cb(connections)
+            // console.log('Connections:');
+            // connections.forEach((person) => {
+            //     if (person.names && person.names.length > 0) {
+            //         console.log(person.names[0].displayName);
+            //         console.log(person.emailAddresses)
+            //     } else {
+            //         console.log('No display name found for connection.');
+            //     }
+            // });
         } else {
             console.log('No connections found.');
         }

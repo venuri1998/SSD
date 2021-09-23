@@ -59,7 +59,17 @@ router.get('/home', (req, res) => {
             res.json(response);
         });
 
-        googleContactService.listEvents(oauth2Client)
+        googleContactService.listEvents(oauth2Client, (events) => {
+            console.log(events)
+            const data = {
+                name: req.session.user.name,
+                displayPicture: req.session.user.displayPicture,
+                id: req.session.user.id,
+                email: req.session.user.email,
+                events: events
+            }
+            res.json(data);
+        })
 
     } else {
         res.redirect('/login')
