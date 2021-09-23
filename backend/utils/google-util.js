@@ -6,7 +6,7 @@ require('dotenv').config()
 const googleConfig = {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect: 'http://localhost:3000/auth/success'
+    redirect: 'http://localhost:3000/redirect'
 }
 
 // scopes use for the application
@@ -37,7 +37,7 @@ function getConnectionUrl(auth) {
 
 
 // get auth url
-module.exports.urlGoogle = function () {
+module.exports.urlGoogle = function() {
     const auth = createConnection();
     const url = getConnectionUrl(auth);
     return url;
@@ -51,7 +51,7 @@ function getOAuth2(auth) {
     });
 }
 
-module.exports.getGoogleAccountFromCode = async function (code, cb) {
+module.exports.getGoogleAccountFromCode = async function(code, cb) {
     const auth = createConnection();
     const { tokens } = await auth.getToken(code);
     auth.setCredentials(tokens);

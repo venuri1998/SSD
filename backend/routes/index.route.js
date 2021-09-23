@@ -18,7 +18,7 @@ const setCookie = async(req, res, next) => {
     googleUtil.getGoogleAccountFromCode(req.query.code, (err, res) => {
         console.log('SET COOKIE FUNC - GET GG ACC');
         if (err) {
-            res.redirect('/login');
+            res.json({ err: true, msg: 'user should be logged in' });
         } else {
             req.session.user = res;
         }
@@ -27,9 +27,9 @@ const setCookie = async(req, res, next) => {
 }
 
 // redirect uri
-router.get('/auth/success', setCookie, (req, res) => {
+router.get('/redirect', setCookie, (req, res) => {
     console.log('AUTH SUCCESS ROUTE');
-    res.redirect('/redirect');
+    res.redirect('/redirect-page');
 })
 
 // directing page
@@ -37,7 +37,7 @@ router.get('/auth/success', setCookie, (req, res) => {
  * but cookie will not save unless a view is rendered to the user
  * this will render a simple view to save cookie in the front end (browser)
  */
-router.get('/redirect', (req, res) => {
+router.get('/redirect-page', (req, res) => {
     console.log('REDIRECT ROUTE');
     res.render('redirect.html');
 });
@@ -48,32 +48,85 @@ router.get('/home', (req, res) => {
     // check for valid session
     if (req.session.user) {
 
+
         // get oauth2 client
         const oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({
             access_token: req.session.user.accessToken
         });
 
-        googleCalenderService.createEvent(oauth2Client, (response) => {
-            console.log('EVENT CREATE');
-            res.json(response);
-        });
-
         googleContactService.listEvents(oauth2Client, (events) => {
             console.log(events)
-            const data = {
+            let data = {
                 name: req.session.user.name,
                 displayPicture: req.session.user.displayPicture,
                 id: req.session.user.id,
                 email: req.session.user.email,
                 events: events
             }
-            res.json(data);
+            res.json(data)
         })
 
     } else {
-        res.redirect('/login')
+        res.json({ err: true, msg: 'login error' })
     }
 });
+
+
+// add event
+router.post('/add-event', (req, res) => {
+    // check for valid session
+    if (req.session.user) {
+
+
+        // get oauth2 client
+        const oauth2Client = new google.auth.OAuth2();
+        oauth2Client.setCredentials({
+            access_token: req.session.user.accessToken
+        });
+
+        if (req.contacts) {
+
+            const eventss = {
+                'summary': 'Google I/O 2015',
+                'location': '800 Howard St., San Francisco, CA 94103',
+                'description': 'A chance to hear more about Google\'s developer products.',
+                'start': {
+                    'dateTime': '2021-09-29T09:00:00-07:00',
+                    'timeZone': 'America/Los_Angeles',
+                },
+                'end': {
+                    'dateTime': '2021-09-30T17:00:00-07:00',
+                    'timeZone': 'America/Los_Angeles',
+                },
+                'recurrence': [
+                    'RRULE:FREQ=DAILY;COUNT=2'
+                ],
+                'attendees': [
+                    { 'email': 'lpage@example.com' },
+                    { 'email': 'sbrin@example.com' },
+                ],
+                'reminders': {
+                    'useDefault': false,
+                    'overrides': [
+                        { 'method': 'email', 'minutes': 24 * 60 },
+                        { 'method': 'popup', 'minutes': 10 },
+                    ],
+                },
+            }
+
+            googleCalenderService.createEvent(oauth2Client, eventss, (response) => {
+                console.log('EVENT CREATE');
+                res.json(response);
+            })
+
+            res.json({ success: true, msg: 'event added successfully' })
+
+        }
+
+    } else {
+        res.json({ err: true, msg: 'login error' })
+    }
+})
 
 module.exports = router;
