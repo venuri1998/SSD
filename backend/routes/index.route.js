@@ -60,7 +60,7 @@ router.get('/view', (req, res) => {
         })
 
         let calendarData = {}
-        let contactData = {}
+        let contactData = []
 
         // get calendar events by passing oauth2 client
         googleCalenderService.calendarEvents(oauth2Client, (events) => {
@@ -77,15 +77,8 @@ router.get('/view', (req, res) => {
             }
 
             googleContactService.listEvents(oauth2Client, (contacts) => {
-
                 if (contacts) {
-                    contactData = {
-                        name: req.session.user.name,
-                        displayPicture: req.session.user.displayPicture,
-                        id: req.session.user.id,
-                        email: req.session.user.email,
-                        contacts: contacts
-                    }
+                    contactData = contacts
                 }
 
                 res.render('details', { contacts: contactData, calendarEvents: calendarData })
@@ -141,9 +134,9 @@ router.post('/add-event', (req, res) => {
 
             googleCalenderService.createEvent(oauth2Client, event, (response) => {
 
-                if (response.err) res.json({ err: true, msg: 'Error adding calender event' })
+                if (response.err) res.status(400).redirect('/view')
 
-                res.json({ err: false, msg: 'event added successfully' })
+                res.status(200).redirect('/view')
             })
         }
 
