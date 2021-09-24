@@ -1,17 +1,26 @@
 const express = require('express')
 const session = require('express-session');
 const nunjucks = require('nunjucks')
+const path = require('path')
+
 const indexRouter = require('./routes/index.route')
 
 const app = express()
 
 require('dotenv').config()
 
-// nunjucks config
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app
-});
+// // nunjucks config
+// nunjucks.configure('views', {
+//     autoescape: true,
+//     express: app
+// });
+
+// static folder
+app.use(express.static(path.join(__dirname, 'public')))
+
+// view engine
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 // used to parse JSON bodies
 app.use(express.json())

@@ -1,0 +1,64 @@
+<html lang="en">
+<%- include('./partials/header.ejs') %>
+
+    <body>
+        <div>
+            <h1>Contacts</h1>
+            <ul>
+                <% if(Object.entries(contacts).length !== 0) { %>
+                    <% contacts.contacts.forEach(contact =>  { %>
+                        <li>
+                            <strong><%= contact %></strong>
+                        </li>
+                        <% }) %>
+                            <% }else{ %>
+                                <div>Error getting contacts</div>
+                                <% } %>
+            </ul>
+            <h1>Events</h1>
+            <ul>
+                <% if(Object.entries(calendarEvents).length !== 0) { %>
+                    <% calendarEvents.events.forEach(event =>  { %>
+                        <li>
+                            <strong><%= event.summary %></strong>
+                        </li>
+                        <% }) %>
+                            <% }else{ %>
+                                <div>Error getting events</div>
+                                <% } %>
+            </ul>
+        </div>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEventModal">
+            ADD EVENT
+        </button>
+
+        <div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="/add-event" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Event</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row g-2">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Summary" aria-label="Summary" name="summary">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Description" aria-label="Description" name="description">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include('./partials/footer.ejs') %>

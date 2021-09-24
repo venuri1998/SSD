@@ -1,35 +1,40 @@
-const express = require('express');
-const { google } = require('googleapis');
-const googleUtil = require('../utils/google-util');
-const googleCalenderService = require('../services/google-calendar.service');
+const express = require('express')
+const { google } = require('googleapis')
+const googleUtil = require('../utils/google-util')
+const googleCalenderService = require('../services/google-calendar.service')
 const googleContactService = require('../services/google-contact.service')
 
-const router = express.Router();
+const router = express.Router()
+
+router.get('/', (req, res) => {
+    console.log('LOGIN ROUTE')
+    res.render('home')
+})
 
 // redirect to authentication uri
 router.get('/login', (req, res) => {
-    console.log('LOGIN ROUTE');
-    res.redirect(googleUtil.urlGoogle());
-});
+    console.log('LOGIN ROUTE')
+    res.redirect(googleUtil.urlGoogle())
+})
 
 // middleware to check and save session cookie
 const setCookie = async(req, res, next) => {
-    console.log('SET COOKIE FUNC');
+    console.log('SET COOKIE FUNC')
     googleUtil.getGoogleAccountFromCode(req.query.code, (err, res) => {
-        console.log('SET COOKIE FUNC - GET GG ACC');
+        console.log('SET COOKIE FUNC - GET GG ACC')
         if (err) {
-            res.json({ err: true, msg: 'user should be logged in' });
+            res.json({ err: true, msg: 'user should be logged in' })
         } else {
-            req.session.user = res;
+            req.session.user = res
         }
-        next();
-    });
+        next()
+    })
 }
 
 // redirect uri
 router.get('/redirect', setCookie, (req, res) => {
-    console.log('AUTH SUCCESS ROUTE');
-    res.redirect('/redirect-page');
+    console.log('AUTH SUCCESS ROUTE')
+    res.redirect('/redirect-page')
 })
 
 // directing page
@@ -38,59 +43,80 @@ router.get('/redirect', setCookie, (req, res) => {
  * this will render a simple view to save cookie in the front end (browser)
  */
 router.get('/redirect-page', (req, res) => {
-    console.log('REDIRECT ROUTE');
-    res.render('redirect.html');
-});
+    console.log('REDIRECT ROUTE')
+    res.render('redirect')
+})
 
 // dashboard
-router.get('/home', (req, res) => {
-    console.log('HOME ROUTE');
-    // check for valid session
+router.get('/view', (req, res) => {
+    console.log('HOME ROUTE')
+        // check for valid session
     if (req.session.user) {
 
-
         // get oauth2 client
-        const oauth2Client = new google.auth.OAuth2();
+        const oauth2Client = new google.auth.OAuth2()
         oauth2Client.setCredentials({
             access_token: req.session.user.accessToken
-        });
-
-        googleContactService.listEvents(oauth2Client, (events) => {
-            console.log(events)
-            let data = {
-                name: req.session.user.name,
-                displayPicture: req.session.user.displayPicture,
-                id: req.session.user.id,
-                email: req.session.user.email,
-                events: events
-            }
-            res.json(data)
         })
 
+        let calendarData = {}
+        let contactData = {}
+
+        // get calendar events by passing oauth2 client
+        googleCalenderService.calendarEvents(oauth2Client, (events) => {
+
+            if (events) {
+                calendarData = {
+                    name: req.session.user.name,
+                    displayPicture: req.session.user.displayPicture,
+                    id: req.session.user.id,
+                    email: req.session.user.email,
+                    events: events
+                }
+
+            }
+
+            googleContactService.listEvents(oauth2Client, (contacts) => {
+
+                if (contacts) {
+                    contactData = {
+                        name: req.session.user.name,
+                        displayPicture: req.session.user.displayPicture,
+                        id: req.session.user.id,
+                        email: req.session.user.email,
+                        contacts: contacts
+                    }
+                }
+
+                res.render('details', { contacts: contactData, calendarEvents: calendarData })
+            })
+        })
     } else {
         res.json({ err: true, msg: 'login error' })
     }
-});
+})
+
 
 
 // add event
 router.post('/add-event', (req, res) => {
+
     // check for valid session
     if (req.session.user) {
 
-
         // get oauth2 client
-        const oauth2Client = new google.auth.OAuth2();
+        const oauth2Client = new google.auth.OAuth2()
+
         oauth2Client.setCredentials({
             access_token: req.session.user.accessToken
-        });
+        })
 
-        if (req.contacts) {
+        if (req.body) {
 
-            const eventss = {
-                'summary': 'Google I/O 2015',
+            const event = {
+                'summary': req.body.summary,
                 'location': '800 Howard St., San Francisco, CA 94103',
-                'description': 'A chance to hear more about Google\'s developer products.',
+                'description': req.body.description,
                 'start': {
                     'dateTime': '2021-09-29T09:00:00-07:00',
                     'timeZone': 'America/Los_Angeles',
@@ -99,9 +125,7 @@ router.post('/add-event', (req, res) => {
                     'dateTime': '2021-09-30T17:00:00-07:00',
                     'timeZone': 'America/Los_Angeles',
                 },
-                'recurrence': [
-                    'RRULE:FREQ=DAILY;COUNT=2'
-                ],
+
                 'attendees': [
                     { 'email': 'lpage@example.com' },
                     { 'email': 'sbrin@example.com' },
@@ -115,13 +139,12 @@ router.post('/add-event', (req, res) => {
                 },
             }
 
-            googleCalenderService.createEvent(oauth2Client, eventss, (response) => {
-                console.log('EVENT CREATE');
-                res.json(response);
+            googleCalenderService.createEvent(oauth2Client, event, (response) => {
+
+                if (response.err) res.json({ err: true, msg: 'Error adding calender event' })
+
+                res.json({ err: false, msg: 'event added successfully' })
             })
-
-            res.json({ success: true, msg: 'event added successfully' })
-
         }
 
     } else {
@@ -129,4 +152,4 @@ router.post('/add-event', (req, res) => {
     }
 })
 
-module.exports = router;
+module.exports = router
