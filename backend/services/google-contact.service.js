@@ -21,6 +21,7 @@ module.exports.listEvents = function(auth, cb) {
                     })
                 }
             })
+            console.log(connectionList.length)
             cb(connectionList)
 
             // console.log('Connections:');

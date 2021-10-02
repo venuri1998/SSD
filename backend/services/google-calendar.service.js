@@ -14,13 +14,16 @@ module.exports.calendarEvents = function(auth, cb) {
 
         if (err) {
             cb({ err: true, msg: err })
+            console.log('EVENT Error')
             return
         }
         const events = res.data.items
-
+        console.log(events)
         if (events.length) {
             cb(events)
             console.log('EVENT COUNT - ' + events.length)
+        }else {
+            cb([])
         }
     })
 }

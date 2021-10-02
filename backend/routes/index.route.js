@@ -3,8 +3,10 @@ const { google } = require('googleapis')
 const googleUtil = require('../utils/google-util')
 const googleCalenderService = require('../services/google-calendar.service')
 const googleContactService = require('../services/google-contact.service')
-
+var moment = require('moment');
 const router = express.Router()
+
+
 
 router.get('/', (req, res) => {
     console.log('LOGIN ROUTE')
@@ -81,7 +83,7 @@ router.get('/view', (req, res) => {
                     contactData = contacts
                 }
 
-                res.render('details', { contacts: contactData, calendarEvents: calendarData })
+                res.render('details', { contacts: contactData, calendarEvents: calendarData, moment: moment, myMail:req.session.user.email })
             })
         })
     } else {
@@ -111,17 +113,15 @@ router.post('/add-event', (req, res) => {
                 'location': '800 Howard St., San Francisco, CA 94103',
                 'description': req.body.description,
                 'start': {
-                    'dateTime': '2021-09-29T09:00:00-07:00',
+                    'dateTime': req.body.startDate + ':00-07:00',
                     'timeZone': 'America/Los_Angeles',
                 },
                 'end': {
-                    'dateTime': '2021-09-30T17:00:00-07:00',
+                    'dateTime': req.body.endDate + ':00-07:00',
                     'timeZone': 'America/Los_Angeles',
                 },
 
                 'attendees': [
-                    { 'email': 'lpage@example.com' },
-                    { 'email': 'sbrin@example.com' },
                 ],
                 'reminders': {
                     'useDefault': false,
@@ -131,9 +131,9 @@ router.post('/add-event', (req, res) => {
                     ],
                 },
             }
-
+            console.log(event)
             googleCalenderService.createEvent(oauth2Client, event, (response) => {
-
+                console.log(response)
                 if (response.err) res.status(400).redirect('/view')
 
                 res.status(200).redirect('/view')

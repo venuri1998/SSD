@@ -26,6 +26,7 @@
         "express": "^4.17.1",
         "express-session": "^1.17.2",
         "googleapis": "^87.0.0",
+        "moment": "^2.29.1",
         "nunjucks": "^3.2.3",
         "passport": "^0.4.1",
         "passport-google-oauth20": "^2.0.0",
