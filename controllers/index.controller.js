@@ -127,9 +127,9 @@ add_event = (req, res) => {
                         ],
                     },
                 };
-                console.log(event);
+
                 googleCalenderService.createEvent(oauth2Client, event, (response) => {
-                    console.log(response);
+
                     if (response.err) res.status(400).redirect('/view');
 
                     res.status(200).redirect('/view')
@@ -157,7 +157,7 @@ send_mail = (req, res) => {
             MailSender(val.summary, req.session.user.email, val.email)
         });
 
-        console.log('called', req.body);
+
         res.status(200).redirect('/view')
     }
 };

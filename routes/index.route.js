@@ -7,9 +7,9 @@ const controller = require('../controllers/index.controller')
 
 // middleware to check and save session cookie
 const setCookie = async(req, res, next) => {
-    console.log('SET COOKIE FUNC')
+    // set cookie function
     googleUtil.getGoogleAccountFromCode(req.query.code, (err, res) => {
-        console.log('SET COOKIE FUNC - GET GG ACC')
+
         if (err) {
             res.json({ err: true, msg: 'user should be logged in' })
         } else {
