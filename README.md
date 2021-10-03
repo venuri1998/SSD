@@ -1,7 +1,7 @@
 ## Secure Software Development - SE4030
--- Github repository has two services -- <br>
-React frontend project(SSD/frontend) as the UI <br>
-NodeJs backend project(SSD/backend) as the application to demonstrate basic Google OAuth2 process
+-- Github repository -- <br>
+NodeJs backend project(SSD/backend) as the application to demonstrate basic Google OAuth2 process <br>
+Embedded with EJS for User interface
 
 ### Setup
 Clone the repo and install dependencies. <br>
