@@ -144,7 +144,7 @@ send_mail = (req, res) => {
             access_token: req.session.user.accessToken
         })
         req.body.to.map((val) => {
-            MailSender('text', req.session.user.email, val)
+            MailSender(val.summary, req.session.user.email, val.email)
         })
 
         console.log('called', req.body)
@@ -166,12 +166,12 @@ function MailSender(text, from, to) {
 
         //change email address to your address, test it
         to: to,
-        subject: 'Details From Sensors',
+        subject: 'Event Details',
         text: text
     };
 
     //mail sending
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
             console.log(error);
         } else {

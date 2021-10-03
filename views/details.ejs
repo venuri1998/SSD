@@ -51,7 +51,7 @@
 
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Send Event -
-                                                    <%= event.summary %>
+                                                    <strong class="content">  <%= event.summary %> </strong>
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
@@ -172,7 +172,13 @@
 
                 button.addEventListener('click', () => {
 
-                    console.log(button.previousElementSibling.textContent)
+                    const summary = button.parentNode.parentNode.parentNode.querySelector('.modal-title .content').textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim()
+
+                    list = []
+                    list.push({
+                        email: button.previousElementSibling.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim(),
+                        summary: summary
+                    })
 
                     fetch('http://localhost:3000/send-mail', {
                         method: 'POST',
@@ -181,7 +187,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            to: button.previousElementSibling.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim()
+                            to: list,
                         })
                     })
 
@@ -199,12 +205,18 @@
                 send.addEventListener('click', () => {
 
                     let emailList = []
+
                     const emails = send.parentNode.previousElementSibling.querySelectorAll('.email')
+
+                    const summary = send.parentNode.parentNode.querySelector('.modal-title .content').textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim()
 
                     if (emails && emails.length) {
                         emails.forEach(email => {
                             console.log(email.textContent)
-                            emailList.push(email.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim())
+                            emailList.push({
+                                email: email.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim(),
+                                summary: summary
+                            })
 
                         })
                         fetch('http://localhost:3000/send-mail', {
