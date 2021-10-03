@@ -83,7 +83,7 @@ router.get('/view', (req, res) => {
                     contactData = contacts
                 }
 
-                res.render('details', { contacts: contactData, calendarEvents: calendarData, moment: moment, myMail:req.session.user.email })
+                res.render('details', { contacts: contactData, calendarEvents: calendarData, moment: moment, myMail: req.session.user.email })
             })
         })
     } else {
@@ -121,8 +121,7 @@ router.post('/add-event', (req, res) => {
                     'timeZone': 'America/Los_Angeles',
                 },
 
-                'attendees': [
-                ],
+                'attendees': [],
                 'reminders': {
                     'useDefault': false,
                     'overrides': [
@@ -143,6 +142,23 @@ router.post('/add-event', (req, res) => {
     } else {
         res.json({ err: true, msg: 'login error' })
     }
+})
+
+// send mail
+router.post('/send-mail', (req, res) => {
+    if (req.session.user) {
+
+        // get oauth2 client
+        const oauth2Client = new google.auth.OAuth2()
+
+        oauth2Client.setCredentials({
+            access_token: req.session.user.accessToken
+        })
+
+        console.log('called', req.body)
+        res.status(200).redirect('/view')
+    }
+
 })
 
 module.exports = router
