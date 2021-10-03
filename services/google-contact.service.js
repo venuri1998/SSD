@@ -7,7 +7,7 @@ module.exports.listEvents = function(auth, cb) {
         pageSize: 10,
         personFields: 'names,emailAddresses',
     }, (err, res) => {
-        if (err) return console.error('The API returned an error: ' + err);
+        if (err) return cb({ err: true, msg: err })
         const connections = res.data.connections;
 
         if (connections) {
