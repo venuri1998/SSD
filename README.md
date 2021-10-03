@@ -8,7 +8,7 @@ Clone the repo and install dependencies. <br>
 `git clone https://github.com/venuri1998/SSD.git` <br>
 #### Inside the application 
 1. `npm install`
-2. Create an .env file in the root directory as follows
+2. Create an .env file in the root directory as follows - ID and Secret can be found in the report 
 
 `GOOGLE_CLIENT_ID = [Application Client ID]`<br>
 `GOOGLE_CLIENT_SECRET = [Application Client Secret]` <br>
