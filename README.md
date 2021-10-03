@@ -6,10 +6,9 @@ NodeJs backend project(SSD/backend) as the application to demonstrate basic Goog
 ### Setup
 Clone the repo and install dependencies. <br>
 `git clone https://github.com/venuri1998/SSD.git` <br>
-#### Backend
-1. `cd frontend`
-2. `npm install`
-3. Create an .env file in the root directory as follows
+#### Inside the application 
+1. `npm install`
+2. Create an .env file in the root directory as follows
 
 `GOOGLE_CLIENT_ID = [Application Client ID]`<br>
 `GOOGLE_CLIENT_SECRET = [Application Client Secret]` <br>
@@ -23,12 +22,5 @@ To start express server, run the following
 
 [ NodeJs project starts on `localhost:3000` ]
 
-#### Frontend
-Go back to root folder  using - `cd ..`
-1. `cd backend`
-2. `npm install`
-3. `npm start`
 
-Visit `http://localhost:5000/` on your browser to access the application.
-
-2020-REG-WE-27-TROJAN
+-TROJAN-
