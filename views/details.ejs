@@ -2,10 +2,16 @@
 <%- include('./partials/header.ejs') %>
 
     <body>
+    <header>
+        <div class="overlay">
+            <h1>Event Manager</h1>
+            <a href="http://localhost:3000">  <button class="buttonLog">Log out</button> </a>
+        </div>
+    </header>
         <div class='main-container'>
             <div class='middleBody'>
                 <div>
-                    <h1 class='text-center'>Events</h1>
+
                     <div class="cards">
                         <% if(Object.entries(calendarEvents).length !== 0) { %>
                             <% calendarEvents.events.forEach((event, i) =>  { %>
@@ -40,7 +46,7 @@
 
 
                                     <div class='card__apply text-center mt-5'>
-                                        <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addEvent<%= i %>">
+                                        <button type="button" class="btn btn-light " data-bs-toggle="modal" data-bs-target="#addEvent<%= i %>">
                                     Send Email
                                 </button>
                                     </div>
@@ -58,7 +64,7 @@
                                             <div class="modal-body contact-list">
                                                 <% if(contacts.length !== 0) { %>
                                                     <% contacts.forEach((contact, j) =>  { %>
-                                                        <div class="d-flex justify-content-between mb-3">
+                                                        <div class="d-flex gap-3 mb-3">
                                                             <div>
                                                                 <%= contact.displayName %>
                                                             </div>
@@ -90,7 +96,7 @@
             </div>
 
             <div class='text-center'>
-                <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addEventModal">
+                <button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#addEventModal">
             ADD EVENT
         </button>
             </div>
