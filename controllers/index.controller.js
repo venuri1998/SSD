@@ -1,41 +1,49 @@
-const { google } = require('googleapis')
-const googleUtil = require('../utils/google-util')
-const googleCalenderService = require('../services/google-calendar.service')
-const googleContactService = require('../services/google-contact.service')
-const moment = require('moment')
+const { google } = require('googleapis');
+const googleUtil = require('../utils/google-util');
+const googleCalenderService = require('../services/google-calendar.service');
+const googleContactService = require('../services/google-contact.service');
+const moment = require('moment');
 const nodemailer = require("nodemailer");
+
+// Returns home page
 home = (req, res) => {
     try {
         res.render('home')
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
+
+// Returns login page
 login = (req, res) => {
     try {
         res.redirect(googleUtil.urlGoogle())
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
+
+// Returns redirect page
 redirect = (req, res) => {
     try {
         res.redirect('/redirect-page')
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
+// Rendering
 redirect_view = (req, res) => {
     try {
         res.render('redirect')
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
+// Returns the view page
 view = (req, res) => {
     try {
 
@@ -43,13 +51,13 @@ view = (req, res) => {
         if (req.session.user) {
 
             // get oauth2 client
-            const oauth2Client = new google.auth.OAuth2()
+            const oauth2Client = new google.auth.OAuth2();
             oauth2Client.setCredentials({
                 access_token: req.session.user.accessToken
-            })
+            });
 
-            let calendarData = {}
-            let contactData = []
+            let calendarData = {};
+            let contactData = [];
 
             // get calendar events by passing oauth2 client
             googleCalenderService.calendarEvents(oauth2Client, (events) => {
@@ -79,19 +87,21 @@ view = (req, res) => {
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
+
+// Adding a event
 add_event = (req, res) => {
     try {
         // check for valid session
         if (req.session.user) {
 
             // get oauth2 client
-            const oauth2Client = new google.auth.OAuth2()
+            const oauth2Client = new google.auth.OAuth2();
 
             oauth2Client.setCredentials({
                 access_token: req.session.user.accessToken
-            })
+            });
 
             if (req.body) {
 
@@ -116,11 +126,11 @@ add_event = (req, res) => {
                             { 'method': 'popup', 'minutes': 10 },
                         ],
                     },
-                }
-                console.log(event)
+                };
+                console.log(event);
                 googleCalenderService.createEvent(oauth2Client, event, (response) => {
-                    console.log(response)
-                    if (response.err) res.status(400).redirect('/view')
+                    console.log(response);
+                    if (response.err) res.status(400).redirect('/view');
 
                     res.status(200).redirect('/view')
                 })
@@ -132,25 +142,25 @@ add_event = (req, res) => {
     } catch (err) {
         res.json({ err: true, msg: 'error' })
     }
-}
+};
 
 send_mail = (req, res) => {
     if (req.session.user) {
 
         // get oauth2 client
-        const oauth2Client = new google.auth.OAuth2()
+        const oauth2Client = new google.auth.OAuth2();
 
         oauth2Client.setCredentials({
             access_token: req.session.user.accessToken
-        })
+        });
         req.body.to.map((val) => {
             MailSender(val.summary, req.session.user.email, val.email)
-        })
+        });
 
-        console.log('called', req.body)
+        console.log('called', req.body);
         res.status(200).redirect('/view')
     }
-}
+};
 
 function MailSender(text, from, to) {
     const transporter = nodemailer.createTransport({
@@ -180,4 +190,4 @@ function MailSender(text, from, to) {
     });
 }
 
-module.exports = { home, login, redirect, redirect_view, view, add_event, send_mail }
+module.exports = { home, login, redirect, redirect_view, view, add_event, send_mail };

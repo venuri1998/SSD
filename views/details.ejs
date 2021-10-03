@@ -111,17 +111,21 @@
                             <div class="modal-body mx-3">
                                 <div class="row g-2 my-3">
                                     <div class="col">
+                                        Title
                                         <input type="text" class="form-control" placeholder="Summary" aria-label="Summary" name="summary">
                                     </div>
                                     <div class="col">
+                                        Description
                                         <input type="text" class="form-control" placeholder="Description" aria-label="Description" name="description">
                                     </div>
                                 </div>
                                 <div class="row g-2 my-3">
                                     <div class="col">
+                                        Start Time
                                         <input type="datetime-local" class="form-control" placeholder="Start Date&Time" aria-label="Summary" name="startDate">
                                     </div>
                                     <div class="col">
+                                        End Time
                                         <input type="datetime-local" class="form-control" placeholder="End Date&Time" aria-label="Summary" name="endDate">
                                     </div>
                                 </div>
@@ -139,37 +143,7 @@
 
     </body>
     <script>
-        // document.getElementById("MyButton").onclick = function() {
-        //     console.log('hy' + document.querySelector('.email').textContent)
-        //     const transporter = nodemailer.createTransport({
-        //         service: 'gmail',
-        //         auth: {
-        //             user: 'hanger24x7@gmail.com',
-        //             pass: '1qaz2wsx@'
-        //         }
-        //     });
-
-        //     var mailOptions = {
-        //         from: 'lahirulakshan780@gmail@gmail.com',
-
-        //         //change email address to your address, test it
-        //         to: 'lahirulakshan123.39@gmail.com',
-        //         subject: 'Details From Sensors',
-        //         text: 'hy'
-        //     };
-
-        //     //mail sending
-        //     transporter.sendMail(mailOptions, function(error, info) {
-        //         if (error) {
-        //             console.log(error);
-        //         } else {
-        //             console.log('Email sent: ' + info.response);
-        //         }
-        //     });
-        // };
-
-
-        // send one
+       // Send One Email
         const btnEmail = document.querySelectorAll('.btn-email')
 
         if (btnEmail.length) {
@@ -203,7 +177,7 @@
 
         }
 
-        // send all
+        // Send emails to all
         const sendAll = document.querySelectorAll('.send-all')
 
         if (sendAll && sendAll.length) {
