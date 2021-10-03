@@ -9,11 +9,13 @@ module.exports.listEvents = function(auth, cb) {
     }, (err, res) => {
         if (err) return console.error('The API returned an error: ' + err);
         const connections = res.data.connections;
-        if (connections.length) {
+
+        if (connections) {
 
             connectionList = []
             // console.log('Connections:');
             connections.forEach((person) => {
+                console.log(person)
                 if (person.names && person.emailAddresses) {
                     connectionList.push({
                         displayName: person.names[0].displayName,
