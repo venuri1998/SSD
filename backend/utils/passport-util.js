@@ -3,6 +3,9 @@ const googleStrategy = require('passport-google-oauth20');
 
 require('dotenv').config()
 
+/*
+    Creates a unique identifier, stores it in a cookie, and sends it to the user's browser
+ */
 passport.serializeUser((user, done) => {
     const session = {
         id: user.gooogleID,
@@ -14,11 +17,17 @@ passport.serializeUser((user, done) => {
     done(null, session);
 });
 
-
+/*
+    Identifying token from cookie, pass into deserializeUser function to turn it into a user
+ */
 passport.deserializeUser((sessionUser, done) => {
     done(null, sessionUser)
 });
 
+/*
+    Requiring the keys file generated in app.js and setting Google Strategy by connecting it to your
+    Google credentials and Authorized redirect URI created in the Google Developers Console.
+ */
 passport.use(
     new googleStrategy(
         {
@@ -33,7 +42,7 @@ passport.use(
                 displayPicture: profile._json.picture,
                 email: profile._json.email
             }
-
+            console.log('ACCESS TOKEN - ' + accessToken)
             done(null, session);
         }
     )

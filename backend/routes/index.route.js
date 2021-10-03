@@ -5,39 +5,8 @@ const googleCalenderService = require('../services/google-calendar.service')
 const googleContactService = require('../services/google-contact.service')
 var moment = require('moment');
 const router = express.Router()
-const nodemailer = require("nodemailer");
 
-function MailSender(text, from, to) {
-    console.log(text)
-    console.log(from)
-    console.log(to)
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'hanger24x7@gmail.com',
-            pass: '1qaz2wsx@'
-        }
-    });
-
-    var mailOptions = {
-        from: from,
-
-        //change email address to your address, test it
-        to: to,
-        subject: 'Details From Sensors',
-        text: text
-    };
-
-    //mail sending
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
-}
 
 router.get('/', (req, res) => {
     console.log('LOGIN ROUTE')
@@ -114,7 +83,7 @@ router.get('/view', (req, res) => {
                     contactData = contacts
                 }
 
-                res.render('details', { contacts: contactData, calendarEvents: calendarData, moment: moment, myMail:req.session.user.email, MailSender:MailSender })
+                res.render('details', { contacts: contactData, calendarEvents: calendarData, moment: moment, myMail: req.session.user.email })
             })
         })
     } else {
@@ -152,8 +121,7 @@ router.post('/add-event', (req, res) => {
                     'timeZone': 'America/Los_Angeles',
                 },
 
-                'attendees': [
-                ],
+                'attendees': [],
                 'reminders': {
                     'useDefault': false,
                     'overrides': [
@@ -174,6 +142,23 @@ router.post('/add-event', (req, res) => {
     } else {
         res.json({ err: true, msg: 'login error' })
     }
+})
+
+// send mail
+router.post('/send-mail', (req, res) => {
+    if (req.session.user) {
+
+        // get oauth2 client
+        const oauth2Client = new google.auth.OAuth2()
+
+        oauth2Client.setCredentials({
+            access_token: req.session.user.accessToken
+        })
+
+        console.log('called', req.body)
+        res.status(200).redirect('/view')
+    }
+
 })
 
 module.exports = router
