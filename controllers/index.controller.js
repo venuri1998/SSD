@@ -3,7 +3,7 @@ const googleUtil = require('../utils/google-util')
 const googleCalenderService = require('../services/google-calendar.service')
 const googleContactService = require('../services/google-contact.service')
 const moment = require('moment')
-
+const nodemailer = require("nodemailer");
 home = (req, res) => {
     try {
         res.render('home')
@@ -143,12 +143,41 @@ send_mail = (req, res) => {
         oauth2Client.setCredentials({
             access_token: req.session.user.accessToken
         })
+        req.body.to.map((val) => {
+            MailSender('text', req.session.user.email, val)
+        })
 
         console.log('called', req.body)
         res.status(200).redirect('/view')
     }
 }
 
+function MailSender(text, from, to) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'hanger24x7@gmail.com',
+            pass: '1qaz2wsx@'
+        }
+    });
 
+    var mailOptions = {
+        from: from,
+
+        //change email address to your address, test it
+        to: to,
+        subject: 'Details From Sensors',
+        text: text
+    };
+
+    //mail sending
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+}
 
 module.exports = { home, login, redirect, redirect_view, view, add_event, send_mail }
